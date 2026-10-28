@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>스마트 사진 편집</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a
+        class="brand-logo"
+        href="https://kmou.ac.kr"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="한국해양대학교 홈페이지로 이동"
+      >
+        <img src="assets/kmou-logo.png" alt="국립한국해양대학교 로고" />
+      </a>
+      <div class="site-title">
+        <p class="site-kicker">KMOU Photo Studio</p>
+        <h1>스마트 사진 편집</h1>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="formats-panel" aria-labelledby="formats-heading">
+        <div class="section-head">
+          <h2 id="formats-heading">사이즈 조정 가능 포맷</h2>
+          <p>아래 아이콘이 붙은 이미지 파일은 이 앱에서 비율을 맞춰 다시 저장할 수 있습니다.</p>
+        </div>
+        <ul class="format-grid" id="format-grid"></ul>
+      </section>
+
+      <section class="workspace">
+        <div class="dropzone" id="dropzone">
+          <input
+            id="file-input"
+            type="file"
+            accept="image/*,.jpg,.jpeg,.jfif,.png,.webp,.gif,.bmp,.svg,.ico,.avif,.tif,.tiff,.heic,.heif,.apng,.dib"
+            multiple
+            hidden
+          />
+          <div class="dropzone-empty" id="dropzone-empty">
+            <div class="dropzone-art" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="56" height="56">
+                <rect x="8" y="14" width="48" height="36" rx="6" fill="none" stroke="currentColor" stroke-width="2.4" />
+                <path d="M22 40l8-10 6 7 4-5 10 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="23" cy="24" r="3.2" fill="currentColor" />
+                <path d="M32 8v10M27 12l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <h2>이미지를 이곳에 끌어다 놓으세요</h2>
+            <p>또는 버튼을 눌러 컴퓨터 폴더에서 여러 장을 한 번에 선택할 수 있습니다.</p>
+            <button type="button" class="btn primary" id="pick-files">파일 선택</button>
+          </div>
+          <div class="dropzone-preview" id="dropzone-preview" hidden>
+            <div class="preview-stage" id="preview-stage" title="클릭하면 다른 사진으로 바꿀 수 있습니다">
+              <canvas id="preview-canvas" aria-label="선택한 사진 미리보기"></canvas>
+            </div>
+            <div class="preview-bar">
+              <div>
+                <p class="preview-kicker">미리보기 · 사진을 클릭하면 다른 파일로 교체</p>
+                <p class="preview-name" id="preview-name"></p>
+              </div>
+              <button type="button" class="btn ghost compact" id="pick-more">파일 추가</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="controls" id="controls">
+          <h2>선택한 사진 설정</h2>
+          <p class="controls-hint" id="controls-hint">사진을 고르면 이 사진에만 비율이 적용됩니다.</p>
+          <fieldset>
+            <legend>비율</legend>
+            <div class="ratio-grid" id="ratio-grid"></div>
+            <div class="custom-ratio" id="custom-ratio" hidden>
+              <label>가로 <input id="custom-w" type="number" min="1" step="1" value="4" /></label>
+              <span>:</span>
+              <label>세로 <input id="custom-h" type="number" min="1" step="1" value="5" /></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>맞춤 방식</legend>
+            <div class="mode-toggle">
+              <label class="choice">
+                <input type="radio" name="fit-mode" value="pad" checked />
+                <span>
+                  <strong>Padding</strong>
+                  <small>원본을 모두 남기고 빈 공간을 채웁니다</small>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="fit-mode" value="crop" />
+                <span>
+                  <strong>Crop</strong>
+                  <small>비율에 맞게 가장자리를 잘라냅니다</small>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="fit-mode" value="stretch" />
+                <span>
+                  <strong>늘이기</strong>
+                  <small>비율에 맞춰 사진을 늘이거나 줄입니다</small>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="pad-color" id="pad-color-wrap">
+            패딩 배경색
+            <input type="color" id="pad-color" value="#ffffff" />
+          </label>
+
+          <button type="button" class="btn gemini" id="enhance" disabled>Gemini 고화질 보정</button>
+          <button type="button" class="btn primary" id="download-all" disabled>일괄 다운로드 (.zip)</button>
+
+          <label class="api-key">
+            Gemini API 키
+            <input id="api-key" type="password" autocomplete="off" placeholder="AIza..." />
+          </label>
+        </aside>
+      </section>
+
+      <section class="queue-panel" id="queue-panel" hidden>
+        <div class="section-head row">
+          <div>
+            <h2>업로드한 사진</h2>
+            <p id="queue-summary">아직 파일이 없습니다.</p>
+          </div>
+          <div class="view-tabs" role="tablist">
+            <button type="button" class="tab active" data-view="all" id="tab-all">전체</button>
+            <button type="button" class="tab" data-view="gallery" id="tab-gallery">갤러리</button>
+          </div>
+        </div>
+        <div class="gallery-toolbar">
+          <button type="button" class="btn ghost compact" id="classify" disabled>Gemini로 갤러리 분류</button>
+        </div>
+        <ul class="file-list" id="file-list"></ul>
+        <div class="gallery-view" id="gallery-view" hidden></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>스마트 사진 편집 · 브라우저에서 처리되며 업로드한 파일은 서버로 전송되지 않습니다.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
